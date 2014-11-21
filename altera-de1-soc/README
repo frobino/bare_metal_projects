@@ -1,0 +1,12 @@
+Step 1]
+	It looks like I can open a server with this command (inside of a nios shell):
+	./openocd -f ../share/openocd/scripts/interface/altera-usb-blaster2.cfg -f ../share/openocd/scripts/target/altera_fpgasoc.cfg
+
+	However, when I try to connect following these commands:
+	arm-altera-eabi-gdb ...
+	(gdb) target remote localhost:3333
+
+	the server connection closes and I get:
+	Error: JTAG-DP OVERRUN - check clock, memaccess, or reduce jtag speed
+
+	TRY WITH NEW VERSION FROM REPO? OR CHECK THE .cfg SCRIPTS!

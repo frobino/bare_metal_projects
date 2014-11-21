@@ -1,0 +1,58 @@
+My tests on a sam4sXplained board, which contains a JLink debugger on-board. 
+
+Step 1)
+	after installing openocd-0.8.0 from the binaries, the connection 
+	to the board can be done with the command:
+
+	./openocd -f ../share/openocd/scripts/interface/jlink.cfg -f ../share/openocd/scripts/target/at91sam4sXX.cfg 
+
+	If errors are visualized, it is necessary to install and run the 
+	JLink dongle from Segger (https://www.segger.com/jlink-software.html)
+
+	To install:
+	sudo dpkg -i jlink_4.80_x86_64.deb
+
+	To run: 
+	JLinkGDBServer
+
+	So, now I have 2 possibilities to create a gdb server:
+	Option 1] 
+		./openocd -f ../share/openocd/scripts/interface/jlink.cfg -f ../share/openocd/scripts/target/at91sam4sXX.cfg 
+		arm-none-eabi-gdb example.elf
+     		(gdb) target remote localhost:3333
+		... load
+		... continue
+
+		Reference:
+		http://openocd.sourceforge.net/doc/html/GDB-and-OpenOCD.html
+
+	Option 2]
+		JLinkGDBServer
+		arm-none-eabi-gdb example.elf
+     		(gdb) target remote localhost:2331
+		... load
+		... continue
+
+		Reference:
+		http://nickwareing.com/flashing-a-sam4s-mcu/
+
+	TO CHECK IF I CAN DEBUG CODE.
+	FOLLOW http://nickwareing.com/flashing-a-sam4s-mcu/
+	AND http://openocd.sourceforge.net/documentation/online-docs/
+
+	IF THINGS ARE NOT WORKING, TRY USING ONLY SEGGER TUTORIAL.
+
+Step 2)
+	Found a very good example from:
+	http://www.emb4fun.com/arm/examples/index.html
+	http://www.emb4fun.com/arm/examples/download/SAM4SXTest.zip
+
+	This is the example that can be found in the SAM4SXTest folder. 
+	Very beautiful makefile and linker scripts.
+
+	TO BE UNDERSTOOD AND DOCUMENTED.
+
+	REQUIRES arm-none-eabi-
+
+Step 3)
+	tbd

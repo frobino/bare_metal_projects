@@ -9,4 +9,23 @@ Step 1]
 	the server connection closes and I get:
 	Error: JTAG-DP OVERRUN - check clock, memaccess, or reduce jtag speed
 
-	TRY WITH NEW VERSION FROM REPO? OR CHECK THE .cfg SCRIPTS!
+	=====================================================================
+	How did I try to solve the problem:
+
+	* modified the target script (see altera_fpgasoc.txt), so that 
+	the FPGA matches the same id seen when I run jtagconfig command 
+	(0x02d120dd)
+
+	* the Error appears following one of the following lines:
+	jtag newtap $_CHIPNAME.fpga tap -irlen 10 -ircapture 0x01 -irmask 0x3 -expected-id $_FPGA_TAPID
+	target create $_TARGETNAME1 cortex_a -chain-position $_CHIPNAME.dap -coreid 0 -dbgbase 0x80110000	
+
+	Seems related to USB Blaster II not supported... 
+	Try to run with -d flag!
+
+	* if I use a classic USB Blaster on the jtag header (as suggested 
+	on the web) it does not show errors, but it hangs as described 
+	in this post:
+	http://sourceforge.net/p/openocd/mailman/message/32694923/
+
+	WAIT FOR USB BLASTER II SUPPORT... at the moment it seems not easy to overcome the problem

@@ -50,9 +50,70 @@ Step 2)
 	This is the example that can be found in the SAM4SXTest folder. 
 	Very beautiful makefile and linker scripts.
 
-	TO BE UNDERSTOOD AND DOCUMENTED.
-
 	REQUIRES arm-none-eabi-
+
+	SAM4SXTest:
+	
+		- ./cmsis/device/startup_sam4s.s is the startup routine which defines 
+		  INTERRUPT VECTOR TABLE, ResetHandler, etc. Many of the functionalities 
+		  described in this file must be executed after reset to initialize system!
+
+		- ./prj contains the linker scripts (.ld) and the debug scripts to be used 
+		  by gdb (.dbg). There are different linker scripts, that can be used to 
+		  locate the program sections in different places/memories (e.g. RAM or flash). 
+		  Depending on how the user set the makefile, one of the provided linker 
+		  scripts will be used. Consequently, a specific debug script should be used with 
+		  gdb to debug. 
+
+		EXAMPLE (running from RAM):
+		If we configure the makefile as following (we want to run from RAM):
+
+		# Define project name and Ram/Flash mode here
+		PROJECT = test
+		RUN_FROM_FLASH = 0
+		HEAP_SIZE = 8192
+		STACK_SIZE = 2048 
+
+		Then we can start debugging with the following commands:
+		arm-none-eabi-gdb -x prj/sam4s_xplained_ram_jlink_1.gdb test_ram.elf
+		(gdb) load
+		(gdb) step
+		...
+
+		Continuing the debug step by step we will see that the program starts at 
+		0x20000000, and it goes through:
+		ResetHandler () at cmsis/device/startup_sam4s.s:148
+		.flash_to_ram_loop_end () at cmsis/device/startup_sam4s.s:174
+		SystemInit () at cmsis/device/system_sam4s.c:81
+		.flash_to_ram_loop_end () at cmsis/device/startup_sam4s.s:179
+		clear_bss_loop () at cmsis/device/startup_sam4s.s:184
+		clear_bss_loop_end () at cmsis/device/startup_sam4s.s:190
+		main () at src/main.c:66 (FINALLY!!!)
+
+		Using a DISASSEMBLER (e.g. http://www2.onlinedisassembler.com) can be very 
+		useful to see what is going on!
+
+		For example, disassembling test_ram.elf, we can see that:
+ 
+		- the instruction ""uint32_t c = 0;" is disassembled into
+		  .text:0x20000630	2300613b	movwcs r6, #315 ; 0x13b
+
+		- This means that the instruction is translated in assembly to 
+		  movwcs r6, #315 ; 0x13b
+		
+		- This specific instruction is translated to 2300613b (hex), 32 bit instruction
+
+		- This specific instruction is located in RAM memory at address 0x20000630, and 
+		  it requires gdb to do 2 "reads":
+
+		...Target halted (PC = 0x20000630)
+		Reading all registers
+		Read 4 bytes @ address 0x20000630 (Data = 0x2300613B)
+		Performing single step...
+		...Target halted (PC = 0x20000632)
+		Reading all registers
+		Read 4 bytes @ address 0x20000632 (Data = 0x607B2300) 
+		
 
 Step 3)
 	tbd

@@ -42,4 +42,44 @@ Step 1)
 General notes
 ===================
 
-- Would be good to understand more acout crt0.s & co.
+- Would be good to understand more about crt0.s & co. (e.g. code sections)
+  Here is what I understood up to now (taken from valvers.com tutorial):
+
+  Code/memory sections:
+
+  * The .text section contains the actual machine instructions which make up your program.
+    We can also refer to .text section as a portion of an object file that contains the executable 
+    instructions.
+
+  * The .data section contains static data which was defined in your code.
+
+  * The .bss section contains uninitialized global or static variables.
+
+  
+  The LINKER: 
+
+  The linker’s job is to link object files into an executable file. 
+  The linker requires a linker script. The linker script tells the linker 
+  how to organise the various object files. The linker will resolve symbols to addresses 
+  when it has arranged all the objects according to the rules in the linker script.
+
+  However, the object files we get from our source code are not sufficient to successfully link. 
+  For example, some variables need to be initialised to certain values, 
+  and some variables need to be initialised to 0. This is all taken care of by an 
+  object file which is usually implicitly linked in by the linker because the linker script 
+  will include a reference to it. The object file is called crt0.o (C Run-Time 0).
+  For example, for the arm-none-eabi-gcc, it is contained in 
+  /usr/lib/gcc/arm-none-eabi/4.8.2/armvXXX/crti.o
+  while the linker scripts are in 
+  /usr/lib/arm-none-eabi/ldscripts/
+
+  When we compile for a target that executes from an image in Flash and uses RAM for variables, 
+  we need a copy of the initial values for the variables from Flash so that every time 
+  the system is started the variables can be initialised to their initial value, 
+  and we need the code in Flash to copy these values into the variables *before* main() is called.
+  This is one of the jobs of the C-Runtime code (CRT). This is a code object that is normally 
+  linked in automagically by your tool-chain. This is usually not the only object to get linked 
+  to your code behind your back – usually the Interrupt Vector Table gets linked in too, 
+  and a Linker Script tells the linker how to organise these additional pieces of code in 
+  your memory layout.
+  

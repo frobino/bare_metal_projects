@@ -13,6 +13,11 @@ startup.o: startup.s
 
 debug: 
 	arm-none-eabi-gdb -x prj/sam4s_xplained_ram_jlink_1.gdb test.elf
+	# running "make debug" requires GDB server to be opened on the Cortex m4
+	# through "openocd" or "jlinkgdbserver" commands.
+	# e.g.:
+	# ./openocd -f ../share/openocd/scripts/interface/jlink.cfg -f ../share/openocd/scripts/target/at91sam4sXX.cfg
+	# JLinkGDBServer
 
 clean:
 	rm -rf *.o *.elf

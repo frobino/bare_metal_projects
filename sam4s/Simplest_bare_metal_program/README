@@ -1,3 +1,35 @@
+This is the simplest example to understand the role of linker, boot-code/interrupt table
+and linker scripts. 
+
+NOTE:
+	This example implements Step 2.
+	So it requires as usual that Step 1 is completed (we can create a gdb server).
+
+HOWTO/USAGE:
+	make all: generates .elf using startup file, c file, and linker file
+
+	make debug: connects through gdb server to the processor,
+	ready to load the previously generated elf file. 
+	NOTE: running this command requires GDB server to be opened on the Cortex m4
+	through openocd or jlinkgdbserver commands.
+
+
+DETAILS:
+
+The ARM9 architecture begins to execute code at a determined address,
+that could be 0 (usually allocated to RAM) or 0xFFFF0000 (usually allocated
+to Read Only Memory). We must put some special code at that particular address:
+the interrupt vector table. It is a series of 32-bit instructions that are executed
+when something special happens: for example when the ARM core is reset.
+
+The "special code" (interrupt vector table) is described in startup.s
+The linker script test.ld is responsable of "mapping" that special code at
+the specific address where the ARM begin to execute code.
+?? check the following ??
+In the specific case of
+SAM4S boards, the address is 0x20000000. 
+?? ??
+
 To be documented properly.
 
 Reference:
